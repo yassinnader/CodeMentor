@@ -1,0 +1,144 @@
+{
+  "sort": [
+    {
+      "name": "Bubble Sort",
+      "description": "A simple, stable comparison-based sorting algorithm. Inefficient on large lists; best for teaching purposes.",
+      "complexity": {
+        "time": "O(n^2)",
+        "space": "O(1)"
+      },
+      "stable": true,
+      "in_place": true,
+      "code": "def bubble_sort(arr):\n    n = len(arr)\n    swapped = True\n    while swapped:\n        swapped = False\n        for i in range(1, n):\n            if arr[i - 1] > arr[i]:\n                arr[i - 1], arr[i] = arr[i], arr[i - 1]\n                swapped = True\n        n -= 1\n    return arr"
+    },
+    {
+      "name": "Merge Sort",
+      "description": "A stable, divide-and-conquer sorting algorithm. Efficient for large datasets, not in-place.",
+      "complexity": {
+        "time": "O(n log n)",
+        "space": "O(n)"
+      },
+      "stable": true,
+      "in_place": false,
+      "code": "def merge_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])\n    right = merge_sort(arr[mid:])\n    return merge(left, right)\n\ndef merge(left, right):\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i])\n            i += 1\n        else:\n            result.append(right[j])\n            j += 1\n    result.extend(left[i:])\n    result.extend(right[j:])\n    return result"
+    },
+    {
+      "name": "Quick Sort",
+      "description": "Efficient, in-place, divide-and-conquer sorting algorithm. Not stable by default.",
+      "complexity": {
+        "time": "O(n log n) average, O(n^2) worst",
+        "space": "O(log n)"
+      },
+      "stable": false,
+      "in_place": true,
+      "code": "def quick_sort(arr):\n    def _quick_sort(arr, low, high):\n        if low < high:\n            pi = partition(arr, low, high)\n            _quick_sort(arr, low, pi - 1)\n            _quick_sort(arr, pi + 1, high)\n    def partition(arr, low, high):\n        pivot = arr[high]\n        i = low - 1\n        for j in range(low, high):\n            if arr[j] <= pivot:\n                i += 1\n                arr[i], arr[j] = arr[j], arr[i]\n        arr[i + 1], arr[high] = arr[high], arr[i + 1]\n        return i + 1\n    _quick_sort(arr, 0, len(arr) - 1)\n    return arr"
+    },
+    {
+      "name": "Heap Sort",
+      "description": "Efficient, in-place, comparison-based sorting algorithm utilizing a heap data structure. Not stable.",
+      "complexity": {
+        "time": "O(n log n)",
+        "space": "O(1)"
+      },
+      "stable": false,
+      "in_place": true,
+      "code": "def heapify(arr, n, i):\n    largest = i\n    l = 2 * i + 1\n    r = 2 * i + 2\n    if l < n and arr[l] > arr[largest]:\n        largest = l\n    if r < n and arr[r] > arr[largest]:\n        largest = r\n    if largest != i:\n        arr[i], arr[largest] = arr[largest], arr[i]\n        heapify(arr, n, largest)\n\ndef heap_sort(arr):\n    n = len(arr)\n    for i in range(n // 2 - 1, -1, -1):\n        heapify(arr, n, i)\n    for i in range(n - 1, 0, -1):\n        arr[0], arr[i] = arr[i], arr[0]\n        heapify(arr, i, 0)\n    return arr"
+    },
+    {
+      "name": "Counting Sort",
+      "description": "Non-comparison, linear-time sorting algorithm for integers in a known range.",
+      "complexity": {
+        "time": "O(n + k)",
+        "space": "O(k)"
+      },
+      "stable": true,
+      "in_place": false,
+      "code": "def counting_sort(arr):\n    if not arr:\n        return []\n    min_val = min(arr)\n    max_val = max(arr)\n    count = [0] * (max_val - min_val + 1)\n    for num in arr:\n        count[num - min_val] += 1\n    output = []\n    for i, c in enumerate(count):\n        output.extend([i + min_val] * c)\n    return output"
+    },
+    {
+      "name": "Radix Sort",
+      "description": "Non-comparison integer sorting algorithm. Works by processing individual digits.",
+      "complexity": {
+        "time": "O(nk)",
+        "space": "O(n + k)"
+      },
+      "stable": true,
+      "in_place": false,
+      "code": "def radix_sort(arr):\n    if not arr: return arr\n    max_num = max(arr)\n    exp = 1\n    while max_num // exp > 0:\n        counting = [0] * 10\n        output = [0] * len(arr)\n        for num in arr:\n            counting[(num // exp) % 10] += 1\n        for i in range(1, 10):\n            counting[i] += counting[i - 1]\n        for num in reversed(arr):\n            idx = (num // exp) % 10\n            counting[idx] -= 1\n            output[counting[idx]] = num\n        arr = output\n        exp *= 10\n    return arr"
+    }
+  ],
+  "graph": [
+    {
+      "name": "Dijkstra's Algorithm",
+      "description": "Finds the shortest path from a single source to all other vertices in a graph with non-negative edge weights.",
+      "complexity": {
+        "time": "O((V + E) log V) with min-heap",
+        "space": "O(V)"
+      },
+      "use_case": "Shortest path in weighted graphs (e.g., maps, network routing).",
+      "code": "import heapq\n\ndef dijkstra(graph, start):\n    distances = {vertex: float('inf') for vertex in graph}\n    distances[start] = 0\n    queue = [(0, start)]\n    while queue:\n        current_distance, current_vertex = heapq.heappop(queue)\n        if current_distance > distances[current_vertex]:\n            continue\n        for neighbor, weight in graph[current_vertex]:\n            distance = current_distance + weight\n            if distance < distances[neighbor]:\n                distances[neighbor] = distance\n                heapq.heappush(queue, (distance, neighbor))\n    return distances"
+    },
+    {
+      "name": "Breadth-First Search (BFS)",
+      "description": "Explores the graph level by level starting from a given node. Finds shortest path in unweighted graphs.",
+      "complexity": {
+        "time": "O(V + E)",
+        "space": "O(V)"
+      },
+      "use_case": "Shortest path in unweighted graphs, connected component detection.",
+      "code": "from collections import deque\n\ndef bfs(graph, start):\n    visited = set([start])\n    queue = deque([start])\n    order = []\n    while queue:\n        vertex = queue.popleft()\n        order.append(vertex)\n        for neighbor in graph[vertex]:\n            if neighbor not in visited:\n                visited.add(neighbor)\n                queue.append(neighbor)\n    return order"
+    },
+    {
+      "name": "Depth-First Search (DFS)",
+      "description": "Traverses as deep as possible along branches before backtracking.",
+      "complexity": {
+        "time": "O(V + E)",
+        "space": "O(V)"
+      },
+      "use_case": "Detecting cycles, pathfinding, topological sorting.",
+      "code": "def dfs(graph, start, visited=None):\n    if visited is None:\n        visited = set()\n    visited.add(start)\n    for neighbor in graph[start]:\n        if neighbor not in visited:\n            dfs(graph, neighbor, visited)\n    return visited"
+    },
+    {
+      "name": "A* Search",
+      "description": "Heuristic-based shortest path algorithm, often used for pathfinding in games or maps.",
+      "complexity": {
+        "time": "O(E)",
+        "space": "O(V)"
+      },
+      "use_case": "Pathfinding with heuristic guidance (e.g., maps, games).",
+      "code": "import heapq\n\ndef a_star(graph, start, goal, heuristic):\n    open_set = [(0 + heuristic(start), 0, start, [])]\n    visited = set()\n    while open_set:\n        est_total, cost, node, path = heapq.heappop(open_set)\n        if node == goal:\n            return path + [node]\n        if node in visited:\n            continue\n        visited.add(node)\n        for neighbor, weight in graph[node]:\n            if neighbor not in visited:\n                heapq.heappush(open_set, (cost + weight + heuristic(neighbor), cost + weight, neighbor, path + [node]))\n    return None"
+    },
+    {
+      "name": "Floyd-Warshall Algorithm",
+      "description": "Finds shortest paths between all pairs of nodes in a weighted graph (with positive/negative weights, no negative cycles).",
+      "complexity": {
+        "time": "O(V^3)",
+        "space": "O(V^2)"
+      },
+      "use_case": "All-pairs shortest paths.",
+      "code": "def floyd_warshall(graph):\n    n = len(graph)\n    dist = [row[:] for row in graph]\n    for k in range(n):\n        for i in range(n):\n            for j in range(n):\n                if dist[i][k] + dist[k][j] < dist[i][j]:\n                    dist[i][j] = dist[i][k] + dist[k][j]\n    return dist"
+    },
+    {
+      "name": "Kruskal's Algorithm",
+      "description": "Finds the Minimum Spanning Tree (MST) in a graph.",
+      "complexity": {
+        "time": "O(E log V)",
+        "space": "O(V)"
+      },
+      "use_case": "Network design, clustering.",
+      "code": "def kruskal(n, edges):\n    parent = list(range(n))\n    def find(u):\n        while u != parent[u]:\n            parent[u] = parent[parent[u]]\n            u = parent[u]\n        return u\n    mst = []\n    for w, u, v in sorted(edges):\n        pu, pv = find(u), find(v)\n        if pu != pv:\n            mst.append((u, v, w))\n            parent[pu] = pv\n    return mst"
+    }
+  ],
+  "string": [
+    {
+      "name": "KMP Algorithm",
+      "description": "Efficient substring search (pattern matching) algorithm.",
+      "complexity": {
+        "time": "O(n + m)",
+        "space": "O(m)"
+      },
+      "use_case": "Fast text search for patterns in strings.",
+      "code": "def kmp_search(text, pattern):\n    n, m = len(text), len(pattern)\n    lps = [0] * m\n    j = 0\n    for i in range(1, m):\n        while j and pattern[i] != pattern[j]:\n            j = lps[j-1]\n        if pattern[i] == pattern[j]:\n            j += 1\n            lps[i] = j\n    res, i, j = [], 0, 0\n    while i < n:\n        if text[i] == pattern[j]:\n            i += 1; j += 1\n        if j == m:\n            res.append(i - m)\n            j = lps[j-1]\n        elif i < n and text[i] != pattern[j]:\n            if j: j = lps[j-1]\n            else: i += 1\n    return res"
+    }
+  ]
+}
